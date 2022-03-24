@@ -1,16 +1,10 @@
+import { Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
+import Catalog from '../../features/catalog/Catalog';
+import { Product } from '../../interfaces/ProductInterface';
 import './App.css';
 
-interface Product{
-  id : number
-  name : string
-  description : string
-  price: number
-  pictureUrl: string
-  type: string
-  brand: string
-  quantityInStock: number
-}
+
 
 function App() {
   
@@ -24,13 +18,10 @@ function App() {
 
 
   return (
-    <div className="App">
-      <ul>
-        {products.map((product)=>(
-          <li key={product.id}>{product.name}</li>
-        ))}
-      </ul>
-    </div>
+    <>
+    <Typography variant="h1">E-Shop</Typography>
+    <Catalog products={products}/>
+    </>
   );
 }
 
