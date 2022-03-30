@@ -1,12 +1,13 @@
-import { Typography } from '@mui/material';
+import { Container, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 import Catalog from '../../features/catalog/Catalog';
 import { Product } from '../../interfaces/ProductInterface';
 import './App.css';
+import Header from './Header';
 
 
 
-function App() {
+function App(props : any) {
   
   const [products, setproducts] = useState<Product[]>([]);
   
@@ -19,8 +20,11 @@ function App() {
 
   return (
     <>
-    <Typography variant="h1">E-Shop</Typography>
+    <Header  children={props.children}/>
+    <Container maxWidth="lg">
+
     <Catalog products={products}/>
+    </Container>
     </>
   );
 }
