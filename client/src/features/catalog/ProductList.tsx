@@ -1,6 +1,6 @@
-import { Grid, List } from "@mui/material";
+import { Grid } from "@mui/material";
 import { Product } from "../../interfaces/ProductInterface";
-import ProductCart from "./ProductCart";
+import ProductCard from "./ProductCard";
 
 interface ProductListProps {
     products: Product[]
@@ -9,17 +9,17 @@ interface ProductListProps {
 function ProductList(props: ProductListProps) {
     return (
         <>
-            <List >
-                <Grid container spacing={3}>
+            
+                <Grid container spacing={4}>
 
                     {props.products.map((product) => (
-                        <Grid key={product.id} item xs={4} lg={2} sm={3} xl={2} md={2}>
+                        <Grid  key={product.id} item xs={6} lg={3} sm={4} md={3}>
 
-                        <ProductCart  product={product} />
+                        <ProductCard  product={product} />
                         </Grid>
                     ))}
                 </Grid>
-            </List>
+            
         </>
     );
 }

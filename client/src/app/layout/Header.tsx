@@ -1,8 +1,11 @@
-import { AppBar, Box, CssBaseline, IconButton, Slide, Toolbar, Typography, useScrollTrigger } from "@mui/material";
+import { AppBar, Box, CssBaseline, IconButton, Slide, Switch, Toolbar, Typography, useScrollTrigger } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
+import { MaterialUISwitch } from "../../components/MuiSwitch";
 
 interface Props {
-    children: React.ReactElement
+    children: React.ReactElement,
+    setTheme : ()=>void,
+    dark: boolean
 }
 
 function HideOnScroll(props: Props) {
@@ -40,6 +43,7 @@ function Header(props : Props) {
                         <Typography variant="h4">
                             E-Shop
                         </Typography>
+                    <MaterialUISwitch checked={props.dark} onChange={()=>props.setTheme()}/>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>

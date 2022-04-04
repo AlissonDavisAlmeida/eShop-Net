@@ -1,17 +1,24 @@
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
+import { useEffect, useState } from "react";
 import { Product } from "../../interfaces/ProductInterface";
 import ProductList from "./ProductList";
 
-interface CatalogProps {
-    products: Product[]
-}
+function Catalog() {
 
-function Catalog(props: CatalogProps) {
+
+    const [products, setproducts] = useState<Product[]>([]);
+  
+    useEffect(()=>{
+      fetch("http://localhost:5000/api/Products")
+      .then(retorno=> retorno.json())
+      .then((items) => setproducts(items))
+    }, [])
+
     return (
         <div className="App">
             <Box >
                 <nav>
-                   <ProductList products={props.products}/>
+                   <ProductList products={products}/>
                     
                 </nav>
             </Box>

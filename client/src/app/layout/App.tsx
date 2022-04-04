@@ -1,30 +1,42 @@
-import { Container, Typography } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { Container, createTheme } from '@mui/material';
+import { ThemeProvider } from '@mui/system';
+import { useState } from 'react';
 import Catalog from '../../features/catalog/Catalog';
-import { Product } from '../../interfaces/ProductInterface';
 import './App.css';
 import Header from './Header';
 
 
 
+
 function App(props : any) {
   
-  const [products, setproducts] = useState<Product[]>([]);
+ const [dark, setdark] = useState(false);
   
-  useEffect(()=>{
-    fetch("http://localhost:5000/api/Products")
-    .then(retorno=> retorno.json())
-    .then((items) => setproducts(items))
-  }, [])
+ const theme = createTheme({
+   palette:{
+     mode: dark? 'dark' : 'light',
+     background:{
+       default:dark ? '#121212' : '#e5eff8' 
+     }
+   }
+ })
+
+ const setTheme = ()=>{
+   setdark(!dark)
+ }
+ 
 
 
   return (
     <>
-    <Header  children={props.children}/>
+    <ThemeProvider theme={theme}>
+
+    <Header  children={props.children} setTheme={setTheme} dark={dark}/>
     <Container maxWidth="lg">
 
-    <Catalog products={products}/>
+    <Catalog/>
     </Container>
+    </ThemeProvider>
     </>
   );
 }
