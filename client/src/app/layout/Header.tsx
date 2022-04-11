@@ -38,14 +38,16 @@ const rightLinks: Links[] = [
     { title: "register", path: "/register" },
 ]
 
-const navStyles ={ color: "inherit", 
-textDecoration: "none",
-"&:hover":{
-    color:"orangered"
-},
-  "&.active":{
-    color:"orangered"  
-  } }
+const navStyles = {
+    color: "inherit",
+    textDecoration: "none",
+    "&:hover": {
+        color: "#9fa8da"
+    },
+    "&.active": {
+        color: "#ef9a9a"
+    }
+}
 
 function Header(props: Props) {
     return (
@@ -58,31 +60,31 @@ function Header(props: Props) {
             <CssBaseline />
             <HideOnScroll {...props}>
                 <AppBar>
-                    <Toolbar sx={{display:"flex", justifyContent:"space-between"}}>
+                    <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Box>
 
-                        <IconButton size="large"
-                            edge="start"
-                            color="inherit"
-                            aria-label="menu"
-                            sx={{ mr: 2 }}>
-                            <MenuIcon />
-                        </IconButton>
-                        <Typography variant="h5" sx={{ cursor: "pointer", textDecoration: "none", color: "inherit" }}
-                            component={NavLink} to="/" >
+                            <IconButton size="large"
+                                edge="start"
+                                color="inherit"
+                                aria-label="menu"
+                                sx={{ mr: 2 }}>
+                                <MenuIcon />
+                            </IconButton>
+                            <Typography variant="h5" sx={{ cursor: "pointer", textDecoration: "none", color: "inherit" }}
+                                component={NavLink} to="/" >
 
-                            E-Shop
-                        </Typography>
+                                E-Shop
+                            </Typography>
 
-                        <MaterialUISwitch checked={props.dark} onChange={() => props.setTheme()} />
-                                </Box>
+                            <MaterialUISwitch checked={props.dark} onChange={() => props.setTheme()} />
+                        </Box>
 
                         <List sx={{ display: "flex" }}>
                             {midLinks.map((link) => {
                                 return (
                                     <ListItem component={NavLink} to={link.path} key={link.path}
                                         sx={navStyles}
-                                              >
+                                    >
                                         {link.title.toUpperCase()}
                                     </ListItem>
                                 )
@@ -91,22 +93,22 @@ function Header(props: Props) {
                         </List>
                         <Box display="flex" alignItems={"center"}>
 
-                        <IconButton size="large" sx={{ color: "inherit" }}>
-                            <Badge badgeContent={4} color="secondary">
-                                <ShoppingCart />
-                            </Badge>
-                        </IconButton>
-                        <List sx={{ display: "flex" }}>
-                            {rightLinks.map((link) => {
-                                return (
-                                    <ListItem component={NavLink} to={link.path} key={link.path}
-                                        sx={navStyles}>
-                                        {link.title.toUpperCase()}
-                                    </ListItem>
-                                )
-                            })}
-                        </List>
-                            </Box>
+                            <IconButton size="large" sx={{ color: "inherit" }}>
+                                <Badge badgeContent={4} color="secondary">
+                                    <ShoppingCart />
+                                </Badge>
+                            </IconButton>
+                            <List sx={{ display: "flex" }}>
+                                {rightLinks.map((link) => {
+                                    return (
+                                        <ListItem component={NavLink} to={link.path} key={link.path}
+                                            sx={navStyles}>
+                                            {link.title.toUpperCase()}
+                                        </ListItem>
+                                    )
+                                })}
+                            </List>
+                        </Box>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
