@@ -1,10 +1,18 @@
-import { AppBar, Box, CssBaseline, IconButton, Slide, Switch, Toolbar, Typography, useScrollTrigger } from "@mui/material";
+import { AppBar, Badge, Box, CssBaseline, IconButton, List, ListItem, Slide, Toolbar, Typography, useScrollTrigger } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { MaterialUISwitch } from "../../components/MuiSwitch";
+import { NavLink } from "react-router-dom";
+import { ShoppingCart } from "@mui/icons-material";
+
+
+interface Links {
+    title: string
+    path: string
+}
 
 interface Props {
     children: React.ReactElement,
-    setTheme : ()=>void,
+    setTheme: () => void,
     dark: boolean
 }
 
@@ -19,20 +27,40 @@ function HideOnScroll(props: Props) {
     );
 }
 
+const midLinks: Links[] = [
+    { title: "catalog", path: "/catalog" },
+    { title: "about", path: "/about" },
+    { title: "contact", path: "/contact" },
+]
 
+const rightLinks: Links[] = [
+    { title: "login", path: "/login" },
+    { title: "register", path: "/register" },
+]
 
-function Header(props : Props) {
+const navStyles ={ color: "inherit", 
+textDecoration: "none",
+"&:hover":{
+    color:"orangered"
+},
+  "&.active":{
+    color:"orangered"  
+  } }
+
+function Header(props: Props) {
     return (
 
         <Box sx={{
             display: { xs: 'column', md: 'row' },
             flexGrow: 1,
-            mb:10
+            mb: 10
         }}>
             <CssBaseline />
             <HideOnScroll {...props}>
                 <AppBar>
-                    <Toolbar>
+                    <Toolbar sx={{display:"flex", justifyContent:"space-between"}}>
+                        <Box>
+
                         <IconButton size="large"
                             edge="start"
                             color="inherit"
@@ -40,10 +68,45 @@ function Header(props : Props) {
                             sx={{ mr: 2 }}>
                             <MenuIcon />
                         </IconButton>
-                        <Typography variant="h4">
+                        <Typography variant="h5" sx={{ cursor: "pointer", textDecoration: "none", color: "inherit" }}
+                            component={NavLink} to="/" >
+
                             E-Shop
                         </Typography>
-                    <MaterialUISwitch checked={props.dark} onChange={()=>props.setTheme()}/>
+
+                        <MaterialUISwitch checked={props.dark} onChange={() => props.setTheme()} />
+                                </Box>
+
+                        <List sx={{ display: "flex" }}>
+                            {midLinks.map((link) => {
+                                return (
+                                    <ListItem component={NavLink} to={link.path} key={link.path}
+                                        sx={navStyles}
+                                              >
+                                        {link.title.toUpperCase()}
+                                    </ListItem>
+                                )
+                            })}
+
+                        </List>
+                        <Box display="flex" alignItems={"center"}>
+
+                        <IconButton size="large" sx={{ color: "inherit" }}>
+                            <Badge badgeContent={4} color="secondary">
+                                <ShoppingCart />
+                            </Badge>
+                        </IconButton>
+                        <List sx={{ display: "flex" }}>
+                            {rightLinks.map((link) => {
+                                return (
+                                    <ListItem component={NavLink} to={link.path} key={link.path}
+                                        sx={navStyles}>
+                                        {link.title.toUpperCase()}
+                                    </ListItem>
+                                )
+                            })}
+                        </List>
+                            </Box>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
