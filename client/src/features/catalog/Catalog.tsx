@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
+import { agents } from "../../app/api/agent";
 import { Product } from "../../interfaces/ProductInterface";
 import ProductList from "./ProductList";
 
@@ -9,9 +10,8 @@ function Catalog() {
     const [products, setproducts] = useState<Product[]>([]);
   
     useEffect(()=>{
-      fetch("http://localhost:5000/api/Products")
-      .then(retorno=> retorno.json())
-      .then((items) => setproducts(items))
+      agents.Catalog.list()
+      .then((listProducts)=> setproducts(listProducts))
     }, [])
 
     return (

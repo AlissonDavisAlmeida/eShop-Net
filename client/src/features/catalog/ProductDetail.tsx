@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../interfaces/ProductInterface";
+import { agents } from "../../app/api/agent";
 
 
 function ProductDetail() {
@@ -16,8 +17,8 @@ function ProductDetail() {
     useEffect(() => {
 
         setloading(true)
-        axios("http://localhost:5000/api/Products/" + id)
-            .then(response => setproduct(response.data))
+        agents.Catalog.details(id? +id : 0)
+            .then(productDetail => setproduct(productDetail))
             .catch(erro => {
                 console.log(erro)
             })
