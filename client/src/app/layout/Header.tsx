@@ -63,13 +63,13 @@ function Header(props: Props) {
                     <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
                         <Box>
 
-                            <IconButton size="large"
+                           {/*  <IconButton size="large"
                                 edge="start"
                                 color="inherit"
                                 aria-label="menu"
                                 sx={{ mr: 2 }}>
                                 <MenuIcon />
-                            </IconButton>
+                            </IconButton> */}
                             <Typography variant="h5" sx={{ cursor: "pointer", textDecoration: "none", color: "inherit" }}
                                 component={NavLink} to="/" >
 

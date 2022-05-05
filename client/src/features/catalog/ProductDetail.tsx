@@ -1,11 +1,12 @@
 import style from "../../styles/ProductDetail.module.css";
 
-import { Box, Container, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
+import { Backdrop, Box, CircularProgress, Container, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../interfaces/ProductInterface";
 import { agents } from "../../app/api/agent";
+import NotFound from "../../app/errors/NotFound";
 
 
 function ProductDetail() {
@@ -17,13 +18,16 @@ function ProductDetail() {
     useEffect(() => {
 
         setloading(true)
-        agents.Catalog.details(id? +id : 0)
+        agents.Catalog.details(id ? +id : 0)
             .then(productDetail => setproduct(productDetail))
             .catch(erro => {
                 console.log(erro)
             })
             .finally(() => {
+
+
                 setloading(false)
+
 
             })
     }, [])
@@ -31,10 +35,14 @@ function ProductDetail() {
     return (
         <Container maxWidth="lg">
             {loading ? (
-                <Box>
-                    <h3>Carregando...</h3>
-                </Box>
-            ) : (
+                <Backdrop open={true} invisible={true}>
+
+                    <Box height={"100vh"} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+
+                        <CircularProgress size={100} />
+                    </Box>
+                </Backdrop>
+            ) : product?.id ? (
                 <Grid container spacing={6} padding={10}>
                     <Grid item xs={6}>
                         <img className={style.imgDetail} src={product?.pictureUrl} alt={product?.name} />
@@ -78,7 +86,7 @@ function ProductDetail() {
                         </TableContainer>
                     </Grid>
                 </Grid>
-            )}
+            ) : <NotFound />}
         </Container>
     );
 }

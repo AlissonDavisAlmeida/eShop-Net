@@ -1,7 +1,7 @@
 import { Container, createTheme } from '@mui/material';
 import { ThemeProvider } from '@mui/system';
 import { useState } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import AboutPage from '../../features/about/AboutPage';
 import Catalog from '../../features/catalog/Catalog';
@@ -14,6 +14,7 @@ import Header from './Header';
 import 'react-toastify/dist/ReactToastify.css';
 import { Home } from '@mui/icons-material';
 import ServerError from '../errors/ServerError';
+import NotFound from '../errors/NotFound';
 
 
 function App(props: any) {
@@ -41,13 +42,16 @@ function App(props: any) {
         <ToastContainer position='bottom-right'/>
         <Header children={props.children} setTheme={setTheme} dark={dark} />
         <Container maxWidth="lg">
-          
+          <Switch>
+
             <Route  exact path='/' component={HomePage} />
             <Route exact path='/catalog' component={Catalog} />
-            <Route path='/catalog/:id' component={ProductDetail} />
+            <Route  path='/catalog/:id' component={ProductDetail} />
             <Route path='/about' component={AboutPage} />
             <Route path='/contact' component={ContactPage} />
             <Route path="/server-error" component={ServerError } />
+            <Route  path={"*"} component={NotFound } />
+          </Switch>
           
         </Container>
       </ThemeProvider>

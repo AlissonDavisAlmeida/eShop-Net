@@ -31,7 +31,7 @@ function ProductCart({ product }: ProductCardProps) {
             </CardContent>
             <CardActions>
                 <Button size="small">Adicionar</Button>
-                <Button component={Link} to={`${product.id}`} size="small">Detalhes</Button>
+                <Button component={Link} to={`/catalog/${product.id}`} size="small">Detalhes</Button>
             </CardActions>
         </Card>
     );
