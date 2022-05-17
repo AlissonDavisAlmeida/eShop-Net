@@ -1,4 +1,5 @@
 import { Grid } from "@mui/material";
+import React from "react";
 import { Product } from "../../interfaces/ProductInterface";
 import ProductCard from "./ProductCard";
 
@@ -9,17 +10,17 @@ interface ProductListProps {
 function ProductList(props: ProductListProps) {
     return (
         <>
-            
-                <Grid container spacing={4}>
 
-                    {props.products.map((product) => (
-                        <Grid  key={product.id} item xs={6} lg={3} sm={4} md={3}>
+            <Grid container spacing={4}>
 
-                        <ProductCard  product={product} />
-                        </Grid>
-                    ))}
-                </Grid>
-            
+                {props.products.map((product) => (
+                    <Grid key={product.id} item xs={6} lg={3} sm={4} md={3}>
+
+                        <ProductCard product={product} />
+                    </Grid>
+                ))}
+            </Grid>
+
         </>
     );
 }

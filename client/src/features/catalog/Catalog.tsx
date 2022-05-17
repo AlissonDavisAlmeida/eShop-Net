@@ -6,13 +6,16 @@ import ProductList from "./ProductList";
 
 function Catalog() {
 
-
+    
     const [products, setproducts] = useState<Product[]>([]);
-  
+    
     useEffect(()=>{
       agents.Catalog.list()
       .then((listProducts)=> setproducts(listProducts))
+
     }, [])
+
+    
 
     return (
         <div className="App">

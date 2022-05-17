@@ -15,6 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Home } from '@mui/icons-material';
 import ServerError from '../errors/ServerError';
 import NotFound from '../errors/NotFound';
+import CartPage from '../../features/cart/CartPage';
 
 
 function App(props: any) {
@@ -49,6 +50,7 @@ function App(props: any) {
             <Route  path='/catalog/:id' component={ProductDetail} />
             <Route path='/about' component={AboutPage} />
             <Route path='/contact' component={ContactPage} />
+            <Route path='/cart' component={CartPage} />
             <Route path="/server-error" component={ServerError } />
             <Route  path={"*"} component={NotFound } />
           </Switch>

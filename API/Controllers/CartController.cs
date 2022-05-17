@@ -20,7 +20,7 @@ namespace API.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet(Name ="GetCart")]
         public async Task<ActionResult<CartDTO>> GetCart()
         {
             Cart carts = await RetrieveCart();
@@ -30,29 +30,13 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            var cartDTO = new CartDTO
-            {
-                BuyerID = carts.BuyerID,
-                ID = carts.ID,
-                items = carts.Items.Select(item => new CartItemDTO
-                {
-                    Name = item.Product.Name,
-                    ProductID = item.ProductID,
-                    Brand = item.Product.Brand,
-                    PictureURL = item.Product.PictureUrl,
-                    Type = item.Product.Type,
-                    Price = item.Product.Price,
-                    Quantity = item.Quantity
-                }).ToList()
-            };
-
-            return cartDTO;
+            return MapCart(carts);
         }
 
-
+        
 
         [HttpPost]
-        public async Task<ActionResult> AddItemToCart(int productID, int quantity)
+        public async Task<ActionResult<CartDTO>> AddItemToCart(int productID, int quantity)
         {
             var cart = await RetrieveCart();
 
@@ -78,15 +62,29 @@ namespace API.Controllers
                 return BadRequest(new ProblemDetails { Title = "Problem saving item to Cart" });
             }
 
-            return StatusCode(201);
+            return CreatedAtRoute("GetCart", MapCart(cart));
 
         }
 
-        /*  [HttpDelete]
+         [HttpDelete]
          public async Task<ActionResult> RemoveCartItem(int productID, int quantity)
          {
-             return Ok();
-         } */
+             var cart = await RetrieveCart();
+             if(cart == null){
+                 return NotFound();
+             }
+
+
+            cart.removeItem(productID, quantity);
+
+            var result = await _context.SaveChangesAsync() > 0;
+
+            if(result){
+                return Ok();
+            }
+
+            return BadRequest(new ProblemDetails{Title = "Problem remove item from cart"});
+         }
 
         private async Task<Cart> RetrieveCart()
         {
@@ -109,5 +107,23 @@ namespace API.Controllers
 
         }
 
+        private CartDTO MapCart(Cart carts)
+        {
+            return new CartDTO
+            {
+                BuyerID = carts.BuyerID,
+                ID = carts.ID,
+                items = carts.Items.Select(item => new CartItemDTO
+                {
+                    Name = item.Product.Name,
+                    ProductID = item.ProductID,
+                    Brand = item.Product.Brand,
+                    PictureURL = item.Product.PictureUrl,
+                    Type = item.Product.Type,
+                    Price = item.Product.Price,
+                    Quantity = item.Quantity
+                }).ToList()
+            };
+        }
     }
 }

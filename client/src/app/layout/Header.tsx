@@ -93,7 +93,7 @@ function Header(props: Props) {
                         </List>
                         <Box display="flex" alignItems={"center"}>
 
-                            <IconButton size="large" sx={{ color: "inherit" }}>
+                            <IconButton size="large" sx={{ color: "inherit" }} component={NavLink} to={"cart"}>
                                 <Badge badgeContent={4} color="secondary">
                                     <ShoppingCart />
                                 </Badge>
