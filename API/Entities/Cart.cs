@@ -42,11 +42,11 @@ namespace API.Entities
                 return;
             }
 
+            existingItem.Quantity -= quantity;
             if(existingItem.Quantity == 0)
             {
                 Items.Remove(existingItem);
             }
-            existingItem.Quantity -= quantity;
         }
 
     }

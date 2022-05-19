@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { agents } from "../../app/api/agent";
 import { Product } from "../../interfaces/ProductInterface";
 import LoadingButton from "@mui/lab/LoadingButton"
+import { useStoreContext } from "../../app/context/StoreContext";
 
 interface ProductCardProps {
     product: Product
@@ -12,11 +13,12 @@ interface ProductCardProps {
 function ProductCart({ product }: ProductCardProps) {
 
     const [loading, setloading] = useState(false);
+    const{setCart} = useStoreContext()
 
-    const addItem = (productID: number, quantity: number) => {
+    const addItemToCart = (productID: number, quantity: number) => {
         setloading(true)
         agents.Cart.addItem(productID, quantity)
-            .then(console.log)
+            .then(cart => setCart?.(cart))
             .catch(console.log)
             .finally(() => setloading(false))
     }
@@ -44,7 +46,7 @@ function ProductCart({ product }: ProductCardProps) {
                 </Typography>
             </CardContent>
             <CardActions>
-                <LoadingButton loading={loading} size="small" onClick={() => addItem(product.id, 1)}>Adicionar</LoadingButton>
+                <LoadingButton loading={loading} size="small" onClick={() => addItemToCart(product.id, 1)}>Adicionar</LoadingButton>
                 <Button component={Link} to={`/catalog/${product.id}`} size="small">Detalhes</Button>
             </CardActions>
         </Card>

@@ -1,12 +1,12 @@
 import style from "../../styles/ProductDetail.module.css";
 
 import { Backdrop, Box, CircularProgress, Container, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../interfaces/ProductInterface";
 import { agents } from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
+import { useStoreContext } from "../../app/context/StoreContext";
 
 
 function ProductDetail() {
@@ -14,8 +14,19 @@ function ProductDetail() {
     const { id } = useParams<{ id: string }>()
     const [product, setproduct] = useState<Product>();
     const [loading, setloading] = useState(false);
+    const [quantity, setquantity] = useState(0);
+    const [submitting, setsubmitting] = useState(false)
+
+
+    const { cart } = useStoreContext()
+
+    const item = cart?.items.find(item => item.productID === product?.id)
 
     useEffect(() => {
+
+        if (item) {
+            setquantity(item.quantity)
+        }
 
         setloading(true)
         agents.Catalog.details(id ? +id : 0)

@@ -3,6 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { MaterialUISwitch } from "../../components/MuiSwitch";
 import { NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
+import { useStoreContext } from "../context/StoreContext";
 
 
 interface Links {
@@ -50,6 +51,9 @@ const navStyles = {
 }
 
 function Header(props: Props) {
+
+    const {cart} = useStoreContext()
+
     return (
 
         <Box sx={{
@@ -94,7 +98,7 @@ function Header(props: Props) {
                         <Box display="flex" alignItems={"center"}>
 
                             <IconButton size="large" sx={{ color: "inherit" }} component={NavLink} to={"cart"}>
-                                <Badge badgeContent={4} color="secondary">
+                                <Badge badgeContent={cart?.items.reduce?.((acc, atual)=>acc + atual.quantity, 0) } color="secondary">
                                     <ShoppingCart />
                                 </Badge>
                             </IconButton>
