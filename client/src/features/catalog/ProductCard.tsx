@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import { agents } from "../../app/api/agent";
 import { Product } from "../../interfaces/ProductInterface";
 import LoadingButton from "@mui/lab/LoadingButton"
-import { useStoreContext } from "../../app/context/StoreContext";
-
+import {useAppDispatch} from "../../store/hooks"
+import { setCart } from "../../store/slices/cart/cartSlice";
 interface ProductCardProps {
     product: Product
 }
@@ -13,12 +13,12 @@ interface ProductCardProps {
 function ProductCart({ product }: ProductCardProps) {
 
     const [loading, setloading] = useState(false);
-    const{setCart} = useStoreContext()
+    const dispatch = useAppDispatch()
 
     const addItemToCart = (productID: number, quantity: number) => {
         setloading(true)
         agents.Cart.addItem(productID, quantity)
-            .then(cart => setCart?.(cart))
+            .then(cart => dispatch(setCart(cart)))
             .catch(console.log)
             .finally(() => setloading(false))
     }

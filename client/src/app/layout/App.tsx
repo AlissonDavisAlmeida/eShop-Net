@@ -12,19 +12,20 @@ import './App.css';
 import Header from './Header';
 
 import 'react-toastify/dist/ReactToastify.css';
-import { Home } from '@mui/icons-material';
 import ServerError from '../errors/ServerError';
 import NotFound from '../errors/NotFound';
 import CartPage from '../../features/cart/CartPage';
-import { useStoreContext } from '../context/StoreContext';
 import { getCookie } from '../util/util';
 import { agents } from '../api/agent';
+import CheckoutPage from '../../features/checkout/CheckoutPage';
+import { setCart } from '../../store/slices/cart/cartSlice';
+import { useAppDispatch } from '../../store/hooks';
 
 
 function App(props: any) {
 
-  const { setCart } = useStoreContext()
-
+  
+  const dispatch = useAppDispatch()
   const [dark, setdark] = useState(false);
   const [loading, setloading] = useState(true);
 
@@ -35,12 +36,12 @@ function App(props: any) {
     console.log(buyerID)
     if (buyerID) {
       agents.Cart.get()
-        .then(cart => setCart?.(cart))
+        .then(cart => dispatch(setCart(cart)))
         .finally(() => setloading(false))
-    }else{
+    } else {
       setloading(false)
     }
-  }, [])
+  }, [dispatch])
 
   const theme = createTheme({
     palette: {
@@ -70,12 +71,13 @@ function App(props: any) {
               <Switch>
 
                 <Route exact path='/' component={HomePage} />
+                <Route path='/cart' component={CartPage} />
                 <Route exact path='/catalog' component={Catalog} />
                 <Route path='/catalog/:id' component={ProductDetail} />
                 <Route path='/about' component={AboutPage} />
                 <Route path='/contact' component={ContactPage} />
-                <Route path='/cart' component={CartPage} />
                 <Route path="/server-error" component={ServerError} />
+                <Route path={"/checkout"} component={CheckoutPage} />
                 <Route path={"*"} component={NotFound} />
               </Switch>
 

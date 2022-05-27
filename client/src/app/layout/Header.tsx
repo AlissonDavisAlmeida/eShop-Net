@@ -1,9 +1,8 @@
 import { AppBar, Badge, Box, CssBaseline, IconButton, List, ListItem, Slide, Toolbar, Typography, useScrollTrigger } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
 import { MaterialUISwitch } from "../../components/MuiSwitch";
 import { NavLink } from "react-router-dom";
 import { ShoppingCart } from "@mui/icons-material";
-import { useStoreContext } from "../context/StoreContext";
+import { useAppSelector } from "../../store/hooks";
 
 
 interface Links {
@@ -52,7 +51,7 @@ const navStyles = {
 
 function Header(props: Props) {
 
-    const {cart} = useStoreContext()
+    const {cart} = useAppSelector(state => state.cart)
 
     return (
 
@@ -97,7 +96,7 @@ function Header(props: Props) {
                         </List>
                         <Box display="flex" alignItems={"center"}>
 
-                            <IconButton size="large" sx={{ color: "inherit" }} component={NavLink} to={"cart"}>
+                            <IconButton size="large" sx={{ color: "inherit" }} component={NavLink} to={"/cart"}>
                                 <Badge badgeContent={cart?.items.reduce?.((acc, atual)=>acc + atual.quantity, 0) } color="secondary">
                                     <ShoppingCart />
                                 </Badge>

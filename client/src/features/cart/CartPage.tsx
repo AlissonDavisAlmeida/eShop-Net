@@ -1,25 +1,28 @@
-import { Box, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"
-import { useStoreContext } from "../../app/context/StoreContext";
 import { Add, Remove } from "@mui/icons-material";
 import { agents } from "../../app/api/agent";
 import CartSummary from "./CartSummary";
 import { formatCurrencies } from "../../app/util/util";
+import { Link } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { removeItem, setCart } from "../../store/slices/cart/cartSlice";
 
 function CartPage() {
+    const dispatch = useAppDispatch()
 
-    const { cart, removeItem, setCart } = useStoreContext()
+    const { cart } = useAppSelector(state => state.cart)
 
     const removeItemToCart = (productID: number, quantity: number = 1) => {
 
         agents.Cart.removeItem(productID, quantity)
-            .then(() => removeItem?.(productID, quantity))
+            .then(() => dispatch(removeItem({productID, quantity})))
             .catch(err => console.log(err))
     }
 
     const addItemToCart = (productID: number) => {
         agents.Cart.addItem(productID, 1)
-            .then(cart => setCart?.(cart))
+            .then(cart => dispatch(setCart(cart)))
             .catch(err => console.log(err))
 
 
@@ -96,6 +99,9 @@ function CartPage() {
                             <Grid item xs={6} />
                             <Grid item xs={6}>
                                 <CartSummary />
+                                <Button component={Link} to="/checkout" variant="contained" size="large" fullWidth >
+                                    Checkout
+                                </Button>
                             </Grid>
 
                         </Grid>

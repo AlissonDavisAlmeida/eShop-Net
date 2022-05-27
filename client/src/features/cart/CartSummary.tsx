@@ -1,12 +1,12 @@
 import { TableContainer, Paper, Table, TableBody, TableRow, TableCell, Typography } from "@mui/material";
-import { useStoreContext } from "../../app/context/StoreContext";
 import { formatCurrencies } from "../../app/util/util";
+import { useAppSelector } from "../../store/hooks";
 
 export default function CartSummary() {
 
     
 
-    const { cart } = useStoreContext()
+    const { cart } = useAppSelector(state => state.cart)
 
     let subtotal = cart?.items.reduce((acc, item) => acc + (item.price * item.quantity), 0) || 0
     const deliveryFee = subtotal/100 > 100 ? 0 : 10

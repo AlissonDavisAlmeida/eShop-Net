@@ -1,12 +1,14 @@
 import style from "../../styles/ProductDetail.module.css";
 
-import { Backdrop, Box, CircularProgress, Container, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Backdrop, Box, CircularProgress, Container, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Product } from "../../interfaces/ProductInterface";
 import { agents } from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
-import { useStoreContext } from "../../app/context/StoreContext";
+import { LoadingButton } from "@mui/lab";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { removeItem, setCart } from "../../store/slices/cart/cartSlice";
 
 
 function ProductDetail() {
@@ -17,14 +19,15 @@ function ProductDetail() {
     const [quantity, setquantity] = useState(0);
     const [submitting, setsubmitting] = useState(false)
 
-
-    const { cart } = useStoreContext()
+    const dispatch = useAppDispatch()
+    const { cart } = useAppSelector(state => state.cart)
 
     const item = cart?.items.find(item => item.productID === product?.id)
 
     useEffect(() => {
 
         if (item) {
+            console.log(item)
             setquantity(item.quantity)
         }
 
@@ -41,7 +44,37 @@ function ProductDetail() {
 
 
             })
-    }, [])
+    }, [item])
+
+    const handleChangeQuantity = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        if (+event.target.value >= 0) {
+
+            setquantity(+event.target.value)
+        }
+    }
+
+    const handleUpdateCart = () => {
+
+        if (!item || quantity > item.quantity) {
+            setsubmitting(true)
+            const updateQuantity = item ? quantity - item.quantity : quantity
+            agents.Cart.addItem(product?.id!, updateQuantity)
+                .then(cart => dispatch(setCart(cart)))
+                .catch(error => console.log(error))
+                .finally(() => {
+                    setsubmitting(false)
+                })
+        } else {
+            setsubmitting(true)
+            const updateQuantity = item.quantity - quantity
+            agents.Cart.removeItem(product?.id!, updateQuantity)
+                .then(cart => dispatch(removeItem({ productID: product?.id, quantity: updateQuantity })))
+                .catch(error => console.log(error))
+                .finally(() => {
+                    setsubmitting(false)
+                })
+        }
+    }
 
     return (
         <Container maxWidth="lg">
@@ -95,6 +128,35 @@ function ProductDetail() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+                        <Grid container spacing="2">
+                            <Grid item xs={6}>
+                                <TextField
+                                    variant="outlined"
+                                    type="number"
+                                    label="Quantity in Cart"
+                                    fullWidth
+                                    value={quantity}
+                                    onChange={event => handleChangeQuantity(event)}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                {quantity > 0 && (
+
+                                    <LoadingButton
+                                        sx={{ height: "55px" }}
+                                        loading={submitting}
+                                        disabled={item?.quantity === quantity}
+                                        color="primary"
+                                        size="large"
+                                        variant="contained"
+                                        fullWidth
+                                        onClick={handleUpdateCart}
+                                    >
+                                        {item ? "Update Quantity" : "Add to Cart"}
+                                    </LoadingButton>
+                                )}
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             ) : <NotFound />}
