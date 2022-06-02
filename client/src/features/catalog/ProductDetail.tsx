@@ -3,48 +3,36 @@ import style from "../../styles/ProductDetail.module.css";
 import { Backdrop, Box, CircularProgress, Container, Divider, Grid, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Product } from "../../interfaces/ProductInterface";
-import { agents } from "../../app/api/agent";
 import NotFound from "../../app/errors/NotFound";
 import { LoadingButton } from "@mui/lab";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { removeItem, setCart } from "../../store/slices/cart/cartSlice";
+import { addCartItemAsync, removeCartItemAsync } from "../../store/slices/cart/cartSlice";
+import { fetchAsyncProduct, productSelector } from "../../store/slices/catalog/catalog_slice";
 
 
 function ProductDetail() {
 
     const { id } = useParams<{ id: string }>()
-    const [product, setproduct] = useState<Product>();
-    const [loading, setloading] = useState(false);
+    const product = useAppSelector(state => productSelector.selectById(state, id))
+    const {status : loading} = useAppSelector(state => state.catalog)
     const [quantity, setquantity] = useState(0);
-    const [submitting, setsubmitting] = useState(false)
+
 
     const dispatch = useAppDispatch()
-    const { cart } = useAppSelector(state => state.cart)
+    const { cart, status } = useAppSelector(state => state.cart)
 
     const item = cart?.items.find(item => item.productID === product?.id)
 
     useEffect(() => {
 
         if (item) {
-            console.log(item)
             setquantity(item.quantity)
         }
 
-        setloading(true)
-        agents.Catalog.details(id ? +id : 0)
-            .then(productDetail => setproduct(productDetail))
-            .catch(erro => {
-                console.log(erro)
-            })
-            .finally(() => {
-
-
-                setloading(false)
-
-
-            })
-    }, [item])
+        if(!product){
+            dispatch(fetchAsyncProduct(+id))
+        }
+    }, [item, dispatch, product])
 
     const handleChangeQuantity = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         if (+event.target.value >= 0) {
@@ -56,29 +44,17 @@ function ProductDetail() {
     const handleUpdateCart = () => {
 
         if (!item || quantity > item.quantity) {
-            setsubmitting(true)
             const updateQuantity = item ? quantity - item.quantity : quantity
-            agents.Cart.addItem(product?.id!, updateQuantity)
-                .then(cart => dispatch(setCart(cart)))
-                .catch(error => console.log(error))
-                .finally(() => {
-                    setsubmitting(false)
-                })
+            dispatch(addCartItemAsync({ productId: product?.id!, quantity: updateQuantity }))
         } else {
-            setsubmitting(true)
             const updateQuantity = item.quantity - quantity
-            agents.Cart.removeItem(product?.id!, updateQuantity)
-                .then(cart => dispatch(removeItem({ productID: product?.id, quantity: updateQuantity })))
-                .catch(error => console.log(error))
-                .finally(() => {
-                    setsubmitting(false)
-                })
+            dispatch(removeCartItemAsync({ productId: product?.id!, quantity: updateQuantity }))
         }
     }
 
     return (
         <Container maxWidth="lg">
-            {loading ? (
+            {loading.includes("pending") ? (
                 <Backdrop open={true} invisible={true}>
 
                     <Box height={"100vh"} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -144,7 +120,7 @@ function ProductDetail() {
 
                                     <LoadingButton
                                         sx={{ height: "55px" }}
-                                        loading={submitting}
+                                        loading={status.includes(`pending ${product.id}`)}
                                         disabled={item?.quantity === quantity}
                                         color="primary"
                                         size="large"

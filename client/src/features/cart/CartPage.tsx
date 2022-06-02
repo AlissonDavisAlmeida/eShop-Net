@@ -1,12 +1,11 @@
 import { Box, Button, Grid, IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete"
 import { Add, Remove } from "@mui/icons-material";
-import { agents } from "../../app/api/agent";
 import CartSummary from "./CartSummary";
 import { formatCurrencies } from "../../app/util/util";
 import { Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { removeItem, setCart } from "../../store/slices/cart/cartSlice";
+import {  addCartItemAsync, removeCartItemAsync } from "../../store/slices/cart/cartSlice";
 
 function CartPage() {
     const dispatch = useAppDispatch()
@@ -15,15 +14,11 @@ function CartPage() {
 
     const removeItemToCart = (productID: number, quantity: number = 1) => {
 
-        agents.Cart.removeItem(productID, quantity)
-            .then(() => dispatch(removeItem({productID, quantity})))
-            .catch(err => console.log(err))
+        dispatch(removeCartItemAsync({productId: productID, quantity: quantity}))
     }
 
     const addItemToCart = (productID: number) => {
-        agents.Cart.addItem(productID, 1)
-            .then(cart => dispatch(setCart(cart)))
-            .catch(err => console.log(err))
+       dispatch(addCartItemAsync({productId: productID, quantity:1}))
 
 
     }
