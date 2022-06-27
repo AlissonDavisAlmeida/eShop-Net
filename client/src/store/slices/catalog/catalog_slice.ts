@@ -9,18 +9,6 @@ export const fetchProductAsync = createAsyncThunk<Product[]>("catalog/fetchProdu
     try {
         return await agents.Catalog.list()
 
-    } catch (err:any) {
-        return thunkAPI.rejectWithValue({
-            error: err.data
-        })
-    }
-})
-
-export const fetchAsyncProduct =
-     createAsyncThunk<Product, number>("catalog/fetchProduct", async (productId: number, thunkAPI) => {
-    try {
-        return await agents.Catalog.details(productId)
-
     } catch (err: any) {
         return thunkAPI.rejectWithValue({
             error: err.data
@@ -28,12 +16,42 @@ export const fetchAsyncProduct =
     }
 })
 
+export const fetchAsyncProduct =
+    createAsyncThunk<Product, number>("catalog/fetchProduct", async (productId: number, thunkAPI) => {
+        try {
+            return await agents.Catalog.details(productId)
+
+        } catch (err: any) {
+            return thunkAPI.rejectWithValue({
+                error: err.data
+            })
+        }
+    })
+
+
+export const fetchFilters = createAsyncThunk(
+    "catalog/fetchFilters",
+    async (_, thunkAPI) => {
+        try {
+            return await agents.Catalog.fetchFilters()
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({
+                error: error.data
+            })
+        }
+    }
+)
+
+
+
 export const catalogSlice = createSlice({
     name: "catalog",
     initialState: productsAdapter.getInitialState({
         productsLoaded: false,
         status: "idle",
-
+        filtersLoaded: false,
+        brands: [],
+        types: []
     }),
     reducers: {
 
@@ -57,12 +75,27 @@ export const catalogSlice = createSlice({
         })
         builder.addCase(fetchAsyncProduct.fulfilled, (state, action) => {
             productsAdapter.upsertOne(state, action.payload),
-            state.status = "idle"
+                state.status = "idle"
         })
         builder.addCase(fetchAsyncProduct.rejected, (state, action) => {
-            console.log(action)
             state.status = "idle"
         })
+
+        builder.addCase(fetchFilters.pending, (state) => {
+            state.status = "pending"
+        })
+
+        builder.addCase(fetchFilters.fulfilled, (state, action) => {
+            state.brands = action.payload.brands
+            state.types = action.payload.types
+            state.filtersLoaded = true
+            state.status = "idle"
+        })
+
+        builder.addCase(fetchFilters.rejected, (state) => {
+            state.status = "idle"
+        })
+
     })
 
 
