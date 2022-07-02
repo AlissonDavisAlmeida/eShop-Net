@@ -24,7 +24,7 @@ namespace API.Controllers
         {
             var query = _context.Products
             .Sort(productParams.OrderBy)
-            .Search(productParams.Search)
+            .Search(productParams.SearchTerm)
             .Filter(productParams.Brands, productParams.Types)
             .AsQueryable();
 

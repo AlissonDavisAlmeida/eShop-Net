@@ -5,15 +5,15 @@ import { history } from "../..";
 axios.defaults.baseURL = "http://localhost:5000/api/"
 axios.defaults.withCredentials = true
 
-axios.interceptors.response.use(response =>{
+axios.interceptors.response.use(response => {
     return response
-}, (error: AxiosError)=>{
-    const {data, status} = error.response!
+}, (error: AxiosError) => {
+    const { data, status } = error.response!
 
     switch (status) {
         case 400:
 
-            if(data.errors){
+            if (data.errors) {
                 const modelStateErrors: string[] = []
                 for (const key in data.errors) {
                     modelStateErrors.push(data.errors[key])
@@ -30,9 +30,9 @@ axios.interceptors.response.use(response =>{
         case 500:
             history.push({
                 pathname: "server-error",
-                state:{error: data}
+                state: { error: data }
             })
-            break;    
+            break;
         default:
             break;
     }
@@ -46,21 +46,21 @@ const responseBody = (response: AxiosResponse) => {
 }
 
 const requests = {
-    get: (url: string) => axios.get(url).then(responseBody),
+    get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
     put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
     delete: (url: string) => axios.delete(url).then(responseBody),
 }
 
 const Catalog = {
-    list: () => requests.get("Products"),
+    list: (params?: URLSearchParams) => requests.get("Products", params),
     details: (id: number) => requests.get(`Products/${id}`),
     fetchFilters: () => requests.get("Products/filters")
 }
 
 const Cart = {
-    get: ()=> requests.get("Cart"),
-    addItem: (productID: number, quantity: number = 1) => requests.post(`Cart?productID=${productID}&quantity=${quantity}`,{}),
+    get: () => requests.get("Cart"),
+    addItem: (productID: number, quantity: number = 1) => requests.post(`Cart?productID=${productID}&quantity=${quantity}`, {}),
     removeItem: (productID: number, quantity: number = 1) => requests.delete(`Cart?productID=${productID}&quantity=${quantity}`),
 }
 
